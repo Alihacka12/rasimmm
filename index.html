@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #1a0010 0%, #2d0020 50%, #1a0010 100%);
+    min-height: 100vh;
+    font-family: Georgia, serif;
+    overflow-x: hidden;
+    color: white;
+  }
+
+  #hearts-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .heart-particle {
+    position: absolute;
+    font-size: 18px;
+    opacity: 0;
+    animation: floatHeart linear infinite;
+    color: #ff6b9d;
+  }
+
+  @keyframes floatHeart {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  .page { display: none; position: relative; z-index: 1; min-height: 100vh; }
+  .page.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  /* PAGE 1 - Surprise */
+  #page1 {
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .surprise-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,105,135,0.4);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    max-width: 420px;
+    backdrop-filter: blur(10px);
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,105,135,0.2); }
+    50% { box-shadow: 0 0 40px rgba(255,105,135,0.5); }
+  }
+
+  .big-heart {
+    font-size: 80px;
+    animation: heartbeat 1.2s ease-in-out infinite;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.15); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.1); }
+    56% { transform: scale(1); }
+  }
+
+  .name-title {
+    font-size: 2.8rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ff6b9d, #ffb3cc, #ff6b9d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: #ffb3cc;
+    margin-bottom: 0.3rem;
+    font-style: italic;
+  }
+
+  .date-badge {
+    display: inline-block;
+    background: rgba(255,105,135,0.2);
+    border: 1px solid rgba(255,105,135,0.5);
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    color: #ffb3cc;
+    margin: 1rem 0;
+    letter-spacing: 1px;
+  }
+
+  .open-btn {
+    background: linear-gradient(135deg, #ff4d7d, #ff6b9d);
+    border: none;
+    border-radius: 50px;
+    padding: 14px 40px;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: Georgia, serif;
+    letter-spacing: 1px;
+  }
+
+  .open-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(255,77,125,0.5);
+  }
+
+  /* PAGE 2 - Message */
+  #page2 { padding: 2rem; text-align: center; }
+
+  .letter-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,105,135,0.3);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    max-width: 460px;
+    backdrop-filter: blur(10px);
+  }
+
+  .letter-title {
+    font-size: 1.4rem;
+    color: #ff6b9d;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+  }
+
+  .letter-text {
+    font-size: 1rem;
+    color: #ffe0ec;
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+  }
+
+  .hearts-row {
+    font-size: 1.5rem;
+    letter-spacing: 8px;
+    margin: 1rem 0;
+    animation: fadeInOut 2s ease-in-out infinite;
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: 1px solid rgba(255,105,135,0.6);
+    border-radius: 50px;
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    color: #ffb3cc;
+    cursor: pointer;
+    margin: 0.4rem;
+    transition: all 0.2s;
+    font-family: Georgia, serif;
+  }
+
+  .nav-btn:hover {
+    background: rgba(255,105,135,0.2);
+    color: white;
+  }
+
+  /* PAGE 3 - Cake */
+  #page3 { padding: 2rem; text-align: center; }
+
+  .cake-container {
+    max-width: 420px;
+    text-align: center;
+  }
+
+  .cake-svg-wrap {
+    margin: 1rem auto;
+  }
+
+  .wish-text {
+    font-size: 1.3rem;
+    color: #ffb3cc;
+    margin: 1.5rem 0 0.5rem;
+    font-style: italic;
+  }
+
+  .age-text {
+    font-size: 1rem;
+    color: rgba(255,179,204,0.7);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    opacity: 0;
+    z-index: 999;
+    pointer-events: none;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Stars */
+  .star {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.3;
+    z-index: 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="hearts-bg"></div>
+
+<!-- PAGE 1: Sürpriz Kapı -->
+<div class="page active" id="page1">
+  <div class="surprise-box">
+    <span class="big-heart">💝</span>
+    <div class="name-title">Ramilə</div>
+    <div class="subtitle">Sənin üçün xüsusi bir sürpriz var</div>
+    <div class="date-badge">🎂 05 Sentyabr</div>
+    <p style="color: rgba(255,179,204,0.8); font-size: 0.9rem; margin-top: 0.5rem;">
+      Bu gün çox xüsusi bir gün...
+    </p>
+    <button class="open-btn" onclick="goToPage(2); launchConfetti();">
+      Aç ❤️
+    </button>
+  </div>
+</div>
+
+<!-- PAGE 2: Mektup -->
+<div class="page" id="page2">
+  <div class="letter-card">
+    <div class="letter-title">💌 Sənə bir məktub</div>
+    <div class="hearts-row">♥ ♥ ♥</div>
+    <div class="letter-text">
+      Ramilə,<br><br>
+      Bu gün dünya sənin doğum günündə biraz daha gözəl oldu.<br><br>
+      Hər gülüşün, hər baxışın, hər anın mənim üçün çox dəyərlidir.
+      Sənin varlığın hər şeyi mənalı edir.<br><br>
+      Bu xüsusi gündə — <strong style="color:#ff6b9d;">doğum günün mübarək</strong>, sevgilim. 🌹<br><br>
+      Sevirəm səni...
+    </div>
+    <div class="hearts-row">💗 💕 💖</div>
+    <div style="margin-top: 1.5rem;">
+      <button class="nav-btn" onclick="goToPage(1)">← Geri</button>
+      <button class="nav-btn" onclick="goToPage(3); launchConfetti();">Tort 🎂 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: Tort -->
+<div class="page" id="page3">
+  <div class="cake-container">
+    <svg width="220" height="200" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg" class="cake-svg-wrap">
+      <!-- Plate -->
+      <ellipse cx="110" cy="185" rx="90" ry="12" fill="#4a0025" opacity="0.5"/>
+      <!-- Cake base -->
+      <rect x="35" y="130" width="150" height="55" rx="8" fill="#c0315a"/>
+      <rect x="35" y="120" width="150" height="18" rx="4" fill="#e84d7a"/>
+      <!-- Frosting drips -->
+      <ellipse cx="60" cy="118" rx="12" ry="8" fill="#ffb3cc"/>
+      <ellipse cx="90" cy="115" rx="11" ry="7" fill="#ffb3cc"/>
+      <ellipse cx="120" cy="117" rx="12" ry="8" fill="#ffb3cc"/>
+      <ellipse cx="150" cy="115" rx="11" ry="7" fill="#ffb3cc"/>
+      <!-- Middle layer -->
+      <rect x="45" y="80" width="130" height="48" rx="6" fill="#d93d68"/>
+      <rect x="45" y="72" width="130" height="16" rx="4" fill="#f05080"/>
+      <!-- Frosting drips layer 2 -->
+      <ellipse cx="68" cy="70" rx="10" ry="7" fill="#ffd6e8"/>
+      <ellipse cx="95" cy="68" rx="10" ry="6" fill="#ffd6e8"/>
+      <ellipse cx="122" cy="69" rx="10" ry="7" fill="#ffd6e8"/>
+      <ellipse cx="150" cy="68" rx="9" ry="6" fill="#ffd6e8"/>
+      <!-- Top layer -->
+      <rect x="58" y="42" width="104" height="38" rx="6" fill="#e84d7a"/>
+      <rect x="58" y="36" width="104" height="14" rx="4" fill="#ff6b9d"/>
+      <!-- Hearts on cake -->
+      <text x="75" y="165" font-size="16" text-anchor="middle">❤️</text>
+      <text x="110" y="160" font-size="14" text-anchor="middle">💕</text>
+      <text x="148" y="165" font-size="16" text-anchor="middle">❤️</text>
+      <text x="110" y="108" font-size="13" text-anchor="middle">🌹</text>
+      <!-- Candles -->
+      <rect x="82" y="16" width="8" height="22" rx="3" fill="#ffeb80"/>
+      <rect x="106" y="12" width="8" height="26" rx="3" fill="#ffb3cc"/>
+      <rect x="130" y="16" width="8" height="22" rx="3" fill="#ffeb80"/>
+      <!-- Flames -->
+      <ellipse cx="86" cy="13" rx="5" ry="7" fill="#ffcc00" opacity="0.9"/>
+      <ellipse cx="86" cy="11" rx="3" ry="5" fill="#ff8800"/>
+      <ellipse cx="110" cy="9" rx="5" ry="7" fill="#ffcc00" opacity="0.9"/>
+      <ellipse cx="110" cy="7" rx="3" ry="5" fill="#ff8800"/>
+      <ellipse cx="134" cy="13" rx="5" ry="7" fill="#ffcc00" opacity="0.9"/>
+      <ellipse cx="134" cy="11" rx="3" ry="5" fill="#ff8800"/>
+    </svg>
+
+    <div class="wish-text">🎉 Doğum günün mübarək, Ramilə! 🎉</div>
+    <div class="age-text">05.09.2010 — Bu gün sənin günündür ✨</div>
+
+    <div style="font-size: 2rem; letter-spacing: 6px; margin: 1rem 0; animation: fadeInOut 1.5s ease-in-out infinite;">
+      💖 💝 💗
+    </div>
+
+    <div>
+      <button class="nav-btn" onclick="goToPage(2)">← Geri</button>
+      <button class="nav-btn" onclick="launchConfetti()">🎊 Konfeti!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Background hearts
+  const bg = document.getElementById('hearts-bg');
+  const heartChars = ['♥','❤','💕','💗','💖'];
+  for (let i = 0; i < 18; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart-particle';
+    h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+    h.style.left = Math.random() * 100 + '%';
+    h.style.animationDuration = (8 + Math.random() * 10) + 's';
+    h.style.animationDelay = (Math.random() * 10) + 's';
+    h.style.fontSize = (12 + Math.random() * 14) + 'px';
+    h.style.opacity = 0;
+    bg.appendChild(h);
+  }
+
+  // Stars
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.opacity = (0.1 + Math.random() * 0.4);
+    document.body.appendChild(s);
+  }
+
+  function goToPage(n) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + n).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function launchConfetti() {
+    const colors = ['#ff4d7d','#ffb3cc','#ff6b9d','#ffd6e8','#ff0055','#ffffff','#ffeb80'];
+    for (let i = 0; i < 60; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.left = (Math.random() * 100) + 'vw';
+        c.style.top = '-10px';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.width = (6 + Math.random() * 8) + 'px';
+        c.style.height = (6 + Math.random() * 8) + 'px';
+        c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        c.style.animationDuration = (2 + Math.random() * 2) + 's';
+        c.style.animationDelay = '0s';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+      }, i * 40);
+    }
+  }
+</script>
+</body>
+</html>
